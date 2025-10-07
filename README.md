@@ -1,68 +1,94 @@
 # Rentflow360
 
-
-A modern, responsive real estate application built with React, Firebase, and Material-UI. Users can browse properties, view detailed information, save favorites, and book property viewings.
+A modern, responsive real estate application built with **React**, **Vite**, **Firebase**, and **Material-UI (MUI)**. Users can browse properties, view detailed information, save favorites, and book property viewings. The platform supports multiple user roles (guest, buyer/renter, agent, admin) with dashboards tailored to each role.
 
 ---
 
 ## Table of Contents
-- [Demo](#demo)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Setup Instructions](#setup-instructions)
-- [Project Structure](#project-structure)
-- [Design Notes](#design-notes)
-- [Future Improvements](#future-improvements)
-- [License](#license)
 
+* [Demo](#demo)
+* [Features](#features)
+* [Tech Stack](#tech-stack)
+* [Setup Instructions](#setup-instructions)
+* [Project Structure](#project-structure)
+* [Design Notes](#design-notes)
 ---
 
 ## Demo
-> Add a link to your live deployed app here (e.g., Vercel, Netlify, or GitHub Pages)
+
+>https://rentflow360internproject.onrender.com/
 
 ---
 
 ## Features
-- Browse a list of properties with images, titles, and locations
-- View property details including price, description, amenities, and safety tips
-- Save favorite properties (requires authentication)
-- Book property viewings
-- Fully responsive design for mobile, tablet, and desktop
-- User authentication and management with Firebase
-- Real-time updates using Firestore
+
+### Property Listings
+
+* **Page 1:** Display property photo, price, location, and size.
+* **Page 2:** Full property details including description, amenities, contact info, and safety tips.
+* **Page 3:** Full-page zoomed photo view with watermark.
+
+### Search & Filters
+
+* Search by location, property type, price, bedrooms, and amenities.
+* Smart matching to return relevant results even with partial or messy input (e.g., “1-bedroom Kasarani” vs “one-bedroom Kasarani”).
+
+### User Roles
+
+* **Guest:** Browse, search, and view listings.
+* **Registered User (Buyer/Renter):** Save favorites, set alerts, contact sellers, leave reviews, report ads.
+* **Agent/Seller:** Create, manage, and track listings. Upload photos and details.
+* **Admin:** Approve/reject listings, manage users, handle reports, view analytics.
+
+### Dashboards
+
+* **User Dashboard:** Saved listings, notifications, and account settings.
+* **Agent Dashboard:** Manage inquiries and listings with status indicators.
+* **Admin Dashboard:** User management, listing moderation, and analytics.
+
+### Other Features
+
+* Real-time updates with Firebase Firestore.
+* Favorite properties with real-time saving.
+* Book property viewings.
+* Responsive design across mobile, tablet, and desktop.
+* Safety tips included for every property.
+* Accessible UI with clear typography and intuitive navigation.
 
 ---
 
 ## Tech Stack
-- **Frontend:** React 18, React Router DOM, Material-UI (MUI)
-- **Backend / Database:** Firebase Firestore
-- **Authentication:** Firebase Authentication
-- **Hosting:** GitHub Pages / Vercel / Netlify
-- **Icons:** Material-UI Icons
+
+* **Frontend:** React 18, Vite, React Router DOM, Material-UI
+* **Backend / Database:** Firebase Firestore
+* **Authentication:** Firebase Authentication
+* **Hosting:** GitHub Pages, Vercel, or Netlify
+* **Icons:** Material-UI Icons, Lucide React
 
 ---
 
 ## Setup Instructions
 
-1. **Clone the repository**
+### 1. Clone the repository
+
 ```bash
-git clone https://github.com/yourusername/property-listing-app.git
-cd property-listing-app
-Install dependencies
+git clone https://github.com/yourusername/rentflow360.git
+cd rentflow360
+```
 
-bash
-Copy code
+### 2. Install dependencies
+
+```bash
 npm install
-Firebase Setup
+```
 
-Create a Firebase project at https://firebase.google.com/
+### 3. Firebase Setup
 
-Enable Firestore and Authentication
+* Create a Firebase project at [Firebase Console](https://firebase.google.com/).
+* Enable **Firestore** and **Authentication**.
+* Copy your Firebase config into `src/services/firebase.js`:
 
-Copy your Firebase config into src/services/firebase.js:
-
-javascript
-Copy code
+```javascript
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
@@ -79,34 +105,68 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-Run the app locally
+```
 
-bash
-Copy code
-npm start
-Open http://localhost:3000 in your browser.
+### 4. Run locally
 
-Project Structure
-bash
-Copy code
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### 5. Build for production
+
+```bash
+npm run build
+```
+
+### 6. Serve production build (Optional)
+
+```bash
+npm run start
+```
+
+> Ensure `serve` is installed (`npm install serve --save-dev`) and the `start` script is set in `package.json`.
+
+---
+
+## Project Structure
+
+```
 src/
-├─ components/         # Reusable UI components
-│  └─ layout/          # Header, Footer, Layout
-├─ contexts/           # React Context for Auth management
-├─ pages/              # Pages for React Router
-│  └─ PropertyDetailsPage.jsx
-├─ services/           # Firebase config and API functions
-├─ App.js              # Main component with routes
-└─ index.js            # React entry point
-Design Notes
-Responsive Layout: Uses MUI Grid and Box to adjust content for mobile, tablet, and desktop.
+├─ assets/                  # Images, icons, and static assets
+├─ components/              # Reusable UI components
+│  ├─ admin/                # Admin dashboard components
+│  ├─ agent/                # Agent dashboard components
+│  ├─ auth/                 # Login, Signup, and Auth components
+│  ├─ dashboard/            # User dashboards
+│  ├─ home/                 # Home page sections
+│  ├─ layout/               # Header, Footer, Layout
+│  ├─ properties/           # Property card and property listing components
+│  └─ user/                 # User-specific components
+├─ contexts/                # React Context (Auth)
+├─ pages/                   # Pages for routing (PropertyDetailsPage, HomePage, etc.)
+├─ services/                # Firebase config and helper functions
+├─ utils/                   # Utility functions
+├─ App.jsx                  # Main component with routes
+├─ index.css                # Global styles
+└─ main.jsx                 # React entry point
+```
 
-Property Cards: Paper components with hover zoom for images, rounded corners, and overlay favorite button.
+---
 
-Typography: Clear hierarchy (h4, h5, h6) for headings, subtitles, and descriptions.
+## Design Notes
 
-Favorites: Users can toggle favorites; data is saved in Firestore in real-time.
+* **Responsive Layout:** MUI Grid and Box adjust content for all screen sizes.
+* **Property Cards:** Hover zoom effect for images, rounded corners, overlay favorite button.
+* **Typography:** Clear hierarchy with `h4`, `h5`, `h6` for headings and subtitles.
+* **Favorites:** Real-time saving in Firestore.
+* **Buttons:** Accessible, large, with hover effects for primary actions.
+* **Safety Tips:** Included for each property listing.
+* **Dashboard:** Role-based features with clean navigation.
 
-Buttons: Large, accessible buttons with hover effects for primary actions like booking and saving favorites.
+---
 
-Safety Tips: Included for user awareness when visiting properties.
+
+
