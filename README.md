@@ -65,7 +65,7 @@ A modern, responsive real estate application built with **React**, **Vite**, **F
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/rentflow360.git
+git clone https://github.com/yvonnegat/Rentflow360InternProject.git
 cd rentflow360
 ```
 
