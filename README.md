@@ -22,11 +22,7 @@ A modern, responsive real estate application built with **React**, **Vite**, **F
 
 ## Features
 
-### Property Listings
-
-* **Page 1:** Display property photo, price, location, and size.
-* **Page 2:** Full property details including description, amenities, contact info, and safety tips.
-* **Page 3:** Full-page zoomed photo view with watermark.
+### Property Listings.
 
 ### Search & Filters
 
@@ -34,8 +30,6 @@ A modern, responsive real estate application built with **React**, **Vite**, **F
 * Smart matching to return relevant results even with partial or messy input (e.g., “1-bedroom Kasarani” vs “one-bedroom Kasarani”).
 
 ### User Roles
-
-* **Guest:** Browse, search, and view listings.
 * **Registered User (Buyer/Renter):** Save favorites, set alerts, contact sellers, leave reviews, report ads.
 * **Agent/Seller:** Create, manage, and track listings. Upload photos and details.
 * **Admin:** Approve/reject listings, manage users, handle reports, view analytics.
@@ -62,8 +56,7 @@ A modern, responsive real estate application built with **React**, **Vite**, **F
 * **Frontend:** React 18, Vite, React Router DOM, Material-UI
 * **Backend / Database:** Firebase Firestore
 * **Authentication:** Firebase Authentication
-* **Hosting:** GitHub Pages, Vercel, or Netlify
-* **Icons:** Material-UI Icons, Lucide React
+* **Hosting:** Render
 
 ---
 
@@ -166,7 +159,6 @@ src/
 * **Safety Tips:** Included for each property listing.
 * **Dashboard:** Role-based features with clean navigation.
 
----
 
 
 
