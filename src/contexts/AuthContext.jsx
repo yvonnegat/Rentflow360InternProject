@@ -17,23 +17,42 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [role, setRole] = useState("guest");
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Keep user + role in sync with Firebase Auth
+  // 🔹 Sync Firebase Auth + Firestore user data
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Fetch role from Firestore
-        const docRef = doc(db, "users", currentUser.uid);
-        const docSnap = await getDoc(docRef);
-        const userRole = docSnap.exists() ? docSnap.data().role : "user";
+        try {
+          const docRef = doc(db, "users", currentUser.uid);
+          const docSnap = await getDoc(docRef);
 
-        setUser(currentUser);
-        setRole(userRole);
+          if (docSnap.exists()) {
+            // Merge Firebase Auth user and Firestore data
+            const firestoreData = docSnap.data();
+            setUser({
+              uid: currentUser.uid,
+              email: currentUser.email,
+              ...firestoreData, // includes role, createdAt, etc.
+            });
+          } else {
+            // If user doc doesn’t exist, set default role
+            setUser({
+              uid: currentUser.uid,
+              email: currentUser.email,
+              role: "user",
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching Firestore user:", error);
+          setUser({
+            uid: currentUser.uid,
+            email: currentUser.email,
+            role: "user",
+          });
+        }
       } else {
         setUser(null);
-        setRole("guest");
       }
       setLoading(false);
     });
@@ -41,7 +60,7 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  // 🟢 Register new users and assign a role
+  // 🟢 Register new users
   const register = async (email, password, role = "user") => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     await setDoc(doc(db, "users", userCredential.user.uid), {
@@ -49,8 +68,12 @@ export function AuthProvider({ children }) {
       role,
       createdAt: new Date(),
     });
-    setUser(userCredential.user);
-    setRole(role);
+
+    setUser({
+      uid: userCredential.user.uid,
+      email,
+      role,
+    });
   };
 
   // 🟡 Login existing users
@@ -58,18 +81,22 @@ export function AuthProvider({ children }) {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const docRef = doc(db, "users", userCredential.user.uid);
     const docSnap = await getDoc(docRef);
-    setUser(userCredential.user);
-    setRole(docSnap.exists() ? docSnap.data().role : "user");
+
+    const role = docSnap.exists() ? docSnap.data().role : "user";
+    setUser({
+      uid: userCredential.user.uid,
+      email: userCredential.user.email,
+      role,
+    });
   };
 
   // 🔴 Logout
   const logout = async () => {
     await signOut(auth);
     setUser(null);
-    setRole("guest");
   };
 
-  const value = { user, role, register, login, logout };
+  const value = { user, register, login, logout };
 
   return (
     <AuthContext.Provider value={value}>

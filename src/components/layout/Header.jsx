@@ -20,13 +20,14 @@ import {
   Menu as MenuIcon,
   AdminPanelSettings,
 } from "@mui/icons-material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
 
 export default function Header() {
-  const { user, role, logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
 
@@ -46,11 +47,11 @@ export default function Header() {
     { label: "Listings", path: "/listings" },
   ];
 
-  // Helper to get role-based dashboard
+  // 🔹 Get role-based dashboard link
   const getDashboardLink = () => {
     if (!user) return null;
 
-    switch (role?.toLowerCase()) {
+    switch (user?.role?.toLowerCase()) {
       case "user":
         return {
           label: "Profile",
@@ -75,6 +76,9 @@ export default function Header() {
   };
 
   const dashboardLink = getDashboardLink();
+
+  // 🔹 Active route highlight
+  const isActive = (path) => location.pathname === path;
 
   return (
     <AppBar
@@ -117,7 +121,7 @@ export default function Header() {
               to={link.path}
               startIcon={link.icon}
               sx={{
-                color: "white",
+                color: isActive(link.path) ? "#DDA853" : "white",
                 fontWeight: 600,
                 px: 2,
                 "&:hover": { bgcolor: alpha("#DDA853", 0.15) },
@@ -133,7 +137,7 @@ export default function Header() {
               to={dashboardLink.path}
               startIcon={dashboardLink.icon}
               sx={{
-                color: "white",
+                color: isActive(dashboardLink.path) ? "#DDA853" : "white",
                 fontWeight: 600,
                 px: 2,
                 "&:hover": { bgcolor: alpha("#DDA853", 0.15) },
@@ -200,7 +204,10 @@ export default function Header() {
         </Box>
 
         {/* Mobile Menu Button */}
-        <IconButton sx={{ display: { md: "none" }, color: "white" }} onClick={(e) => setMobileMenuAnchor(e.currentTarget)}>
+        <IconButton
+          sx={{ display: { md: "none" }, color: "white" }}
+          onClick={(e) => setMobileMenuAnchor(e.currentTarget)}
+        >
           <MenuIcon />
         </IconButton>
 
@@ -238,8 +245,20 @@ export default function Header() {
             </MenuItem>
           ) : (
             <>
-              <MenuItem component={Link} to="/login" onClick={() => setMobileMenuAnchor(null)}>Login</MenuItem>
-              <MenuItem component={Link} to="/register" onClick={() => setMobileMenuAnchor(null)}>Register</MenuItem>
+              <MenuItem
+                component={Link}
+                to="/login"
+                onClick={() => setMobileMenuAnchor(null)}
+              >
+                Login
+              </MenuItem>
+              <MenuItem
+                component={Link}
+                to="/register"
+                onClick={() => setMobileMenuAnchor(null)}
+              >
+                Register
+              </MenuItem>
             </>
           )}
         </Menu>
